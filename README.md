@@ -1,2 +1,3 @@
 # leetcode
-placeholder for coding
+placeholder for coding.
+daily coding challenge
