@@ -1,0 +1,146 @@
+All the work including original data, jupyter notebook are saved at https://github.com/neojohny/ml_7641/tree/master/homework1.
+Another backup is saved at https://b.gatech.edu/2FZeNJR.
+
+I used Jupyter notebook to finish the homework. The file name is homework1-final.ipynb.
+There are three packages I used that might need to install for the code to run.
+pip install -U pandas
+pip install -U numpy
+pip install -U scikit-learn
+Especially for the scikit-learn package, I need it to be after 0.22 version for the learning curve to work.
+
+You can basically follow alone the codes to get the result.
+
+Thanks for grading my homework.
+
+
+select country,count(distinct cell)
+from confirmation c left join sms s on s.date = c.date and s.cell = c.cell
+where datediff(date, curdate())=1
+group by country
+
+select sum(case when count(distinct date)>=7 then 1 
+else 0 end)
+from sms
+where type = 'notification' and datediff(date,curdate())=7
+group by users
+
+
+select country,sum(cost)
+from users u left join ad a on a.user_d = u.user_id
+where datediff(date,curdate())<=30
+group by u.country
+
+
+
+select unit_id,count(1)
+from ad a inner join ad  b on a.unit = b.unit and a.date>=b.date
+where a.event = create_ad and b.event = impression
+group by unit 
+
+
+select extra, count( distinct postid)
+from user_action
+where action='report' and datediff(date,curdate())=1
+group by action
+
+
+select date,(sum(case when reviewid is null then 0 else 1 end)/sum( case when action = 'view' then 1 else 0 end)
+from user_action ua left join reviwer_removals rr on ua.postid=rr.postid
+group by date
+
+select comment_count,count(1) as dis
+from
+(select count(1) as coment_num,target_id
+from comment
+where target_id is not null
+group by target_id) as comment_count
+group by comment_countz
+
+
+select content_type,counts.total,count(1) as sums
+(
+select distinct content_type , postid
+from comments
+where target_id is null
+) types left join
+(select target_id,count(1) as total
+from comments 
+where target_id is not null
+group by target_id) counts
+on counts.target_id=types.postid
+group by 1,2
+
+select avg(per) from (
+select date,count（distinct sessionid)/count(distinct user) as per
+where datediff(date,curdate()) <=30
+group by 1) final
+
+
+select unit_id,ifnull(sum(time_spent),0)
+from session s left join time t on s.sessionid = t.sessionid
+group by 1,2
+
+
+select sum(case when senderid is not null then 1 else 0)/count(senderid)
+from accept a left join request r on r.time = a.time and r.senderid = a.senderid and r.requestid = a.requestid
+where date = XXX
+
+select user_id,count(distinct friend)
+from
+(
+	select request as user_id,accept as friend
+	from accept 
+	union all
+	select accept,request
+	from accept 
+) as all
+group by user_id
+order by count（distinct friend) desc
+
+
+
+select ifnull(sum(message_sends),0)/count(distinct(userid)
+from success 
+where userid not in 
+	(select userid from failure)
+	and time = XXXX
+	
+select s.message_sends- ifnull(f.message_sends,0)
+from success s 
+	left join failure f 
+	on s.time =f.time and s.userid = f.userid
+where date = XXX
+
+
+select songid,count(1)
+from table 1
+where time = curdate()
+group by 1
+
+
+with friends as 
+(select userid1 as userid, userid2 as friendid
+	from table2
+	union
+	select userid2,userid1
+	from table2)
+select userid,friendid,case when t.songi=t1.songid then 1 else 0 end
+from table1 t 
+	left join friends f on t.userid = f.userid 
+	left join table1 t1 on t1.userid = f.friendid
+group by 1,2
+having sum(case when t.songi=t1.songid then 1 else 0 end)>2
+
+
+select ifnull(sum(has_user),0)/distinct(advertiser_id)
+from 
+	(select distinct advertiser_id,case when user_id is null then 0 else 1 end as has_user
+	from t1 left join t2 on t1.ad_id = t2.ad_id) final
+
+
+select advertiser_id,ad_id,sum(price)/avg(spend)
+from t1 left join t2 on t1.ad_id = t2.ad_id
+group by 1,2
+
+
+
