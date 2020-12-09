@@ -157,3 +157,46 @@ group by 1
 select count(distinct request_id)/count(distinct sender_id)
 from request r left join accecpt a on r.sender_id = r.request_id and r.send_to_id = a.accept_id
 
+
+select id,sum(total)
+from (
+select request_id id,count(distinct accept_id) total
+from accept 
+group by 1
+union all
+select accept_id,count(distinct request_id)
+from accept
+group by 1
+) final
+group by 1
+
+
+-- 11
+
+select user1,user2,count(t2.sender)
+from table1 left join table2 on (t1.user1 = t2.sender and t1.user2= t2.recipient )
+                             or (t1.user1 = t2.recipient and t21.user2 = t2.sender)
+                             group by 1,2
+
+--- 12
+select avg(t1.message_sends)
+from t1 left join t2 on t1.date=t2.date and t1.userid = t2.userid
+where date = somedate and t2.date is null
+
+
+-- 13
+userid,songid,   f1,f2
+
+select f1,f2  
+from friend left join song1 s1 on s1.userid = friend.f1 left join song1 s2 on s2.userid = friend.f2
+group by 1,2
+having sum(case when s1.id = s2.id then 1 else 0 end) >2 
+
+
+--14 
+select count(num)/count(1)
+from (
+select advertiser_id,count(ad_id) num
+from adv left join ad on adv.ad_id = adv=ad_id
+group by 1
+) final
