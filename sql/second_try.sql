@@ -200,3 +200,11 @@ select advertiser_id,count(ad_id) num
 from adv left join ad on adv.ad_id = adv=ad_id
 group by 1
 ) final
+
+
+
+select department,name as employee,salary
+from 
+(select employee.*,rank() over (partition by departmentid order by salary desc) as rank,department.name as department
+from employee left join department on department.id = employee.departmentid) result 
+where rank <= 3
