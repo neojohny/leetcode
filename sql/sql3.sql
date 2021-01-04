@@ -119,3 +119,60 @@ from comment p left join comment c on p.content_id = c.target_id
 group by 1,2
 ) result 
 group by 1,2
+
+--7
+
+select sum(case when status = 'fraud' then 1 else 0 end)/count(ad_account)
+from table
+where spend >0
+
+select count(distinct account)
+from table
+where status = 'fraud' and date = curdate()
+
+--6
+select sum(clicks),sum(displays)
+from table 
+where date = somedate
+
+select user,sum(clicks)/sum(displays)*1.0
+from table
+group by 1
+
+select group,sum(clicks)/sum(display)
+from table
+group by 1
+
+
+--5 
+select extra,count(distinct post_id)
+from spam
+where date - curdate() = 1 and action = 'report'
+group by 1
+
+
+select date,user,sum(case when review_id is not null then 1 else 0 end)/ count(distinct post_id)
+from table t left join remove r on t.post_id = r.post_id
+where action = 'report'
+group by 1,2
+
+
+select user,count(review_id),count(distinct post_id)
+from table t left join remove r on t.post_id = r.post_id
+where action = 'report'  and datediff(date,curdate()) <= 30
+group by 1 
+
+
+--4
+select country,ifnull(sum(cost),0)
+from  users u left join ad4ad a on a.user_id = u.user_id
+where datediff(date,curdate())<=30
+group by 1
+
+
+select t.user_id,sum(case when event = impression then 1 else 0 end)
+(select * from table where event = 'create_ad') c
+left join table t on t.ad_id = c.ad_id and t.user_id = c.user_id
+group by 1
+
+
