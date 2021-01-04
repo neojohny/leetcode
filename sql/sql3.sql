@@ -91,3 +91,31 @@ select a,r
 from r)
 group by 1
 order by 2 desc
+
+
+--9
+select date,count(sessionid)/count(distinct userid)
+from session
+where datediff(day,date,curdate())<=30
+
+select total,count(user)
+from (
+select user,sum(time_spent) total 
+from
+session s left join time t on t.sessionid = s.sessionid
+group by 1) result
+
+
+--8
+select to,count(target_id) from (
+select target_id,count(content_id) to
+from comment
+where target_id is not null)
+group by 1
+
+select type,to,count(content_id) from (
+select p.type,p.content_id,count(c.content_id) as to
+from comment p left join comment c on p.content_id = c.target_id 
+group by 1,2
+) result 
+group by 1,2
