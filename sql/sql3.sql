@@ -176,3 +176,44 @@ left join table t on t.ad_id = c.ad_id and t.user_id = c.user_id
 group by 1
 
 
+-- 1
+select date,sum(when event = 'post' then 1 else 0 end)/nullif(sum(case when event = 'enter' then 1 else 0 end),0)
+from composer 
+where datediff(date,curdate) <=7
+group by 1
+
+
+select date,country,sum(case when event = 'post' then 1 else 0)/count(distinct u.user_id)
+from user u left join composer c on c.user_id = u.user_id and c.date = u.date
+where dau_flag = 1 and date = curdate() 
+group by 1,2
+
+-- 2
+select date,sum(num)/count(num)
+from (
+select date,send_id,sum(case when count(distinct receive_id)>5 then 1 else 0 end)/count(send_id) num
+from
+(select * from message
+union
+select * from message) result 
+group by 1,2)
+group by 1
+--having count(distinct receive_id)
+
+
+--3 
+select country,sum(type)
+from sms 
+where datediff(date,curdate())=1 and type = 'confirmation'
+group by 1
+
+select cell_number 
+from sms
+where type = 'confirmation' and datediff(date,curdate())<=7
+having count(distinct date)>=7
+group by 1
+
+select date,count(distinct c.cell_number)/count(distinct s.cell_number)
+from sms s left join confirmation c on s.cell_number = c.cell_number
+where datediff(date,curdate()) <= 30 and type = 'confirmation'
+group by 1
