@@ -217,3 +217,22 @@ select date,count(distinct c.cell_number)/count(distinct s.cell_number)
 from sms s left join confirmation c on s.cell_number = c.cell_number
 where datediff(date,curdate()) <= 30 and type = 'confirmation'
 group by 1
+
+
+---------------------
+-- spam 刷
+
+select extra,count(distinct post_id)
+from user_actions
+where curdate() - ds = 1 and action = 'report'
+group by 1
+
+
+select u.ds, count(distinct r.postid)/count(distinct u.post_id)
+from user_actions u left join revewer_removals r on u.post_id = r.post_id
+group by u.ds
+
+select user_id, count(distinct r.postid)/count(distinct u.post_id)
+from user_actions u left join review r on r.post_id = u.post_id
+where u.action = 'report' and datediff(curdate(),ds) < = 30
+group by 1
