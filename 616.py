@@ -13,8 +13,8 @@ class Solution:
         nodeneighbour = [[] for _ in range(numCourses)]
 
         for c,pre in prerequisites:
-            nodeindegree[pre] += 1
-            nodeneighbour[c].append(pre)
+            nodeindegree[c] += 1
+            nodeneighbour[pre].append(c)
 
         startcourse = []
         for i in range(numCourses):
