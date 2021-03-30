@@ -24,3 +24,19 @@ class Solution:
 	
 
 	#better solution is going from both end to the middle
+    def twoSum_better(self, nums, target):
+        # write your code here
+        if not nums:# or len(nums)<2:
+            return []
+        left = 0
+        right = len(nums)-1
+        while left < right:
+            total = nums[left] + nums[right]
+            if total == target:
+                return [left+1,right+1]
+            if total > target:
+                right -= 1
+            
+            if total < target:
+                left += 1
+        return []
